@@ -1,0 +1,29 @@
+<configuration>
+
+    <!-- This is the default logging level configuration for the application. -->
+    <property name="ROOT_STDOUT_LOG_LEVEL" value="INFO" />
+
+    <!-- Override default console log writing -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %logger{36}:%line - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Use this with OpenTelemetry for JAVA client -->
+    <!--        <appender name="OPEN_TELEMETRY" class="io.opentelemetry.instrumentation.logback.mdc.v1_0.OpenTelemetryAppender">-->
+    <!-- Use this with OpenTelemetry for native opentelemetry-spring-boot-starter -->
+    <!-- This is needed to enable logs in Loki -->
+    <appender name="OPEN_TELEMETRY" class="io.opentelemetry.instrumentation.logback.appender.v1_0.OpenTelemetryAppender">
+        <captureExperimentalAttributes>true</captureExperimentalAttributes>
+        <captureKeyValuePairAttributes>true</captureKeyValuePairAttributes>
+        <captureMdcAttributes>*</captureMdcAttributes>
+    </appender>
+
+    <root level="${ROOT_STDOUT_LOG_LEVEL}">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="OPEN_TELEMETRY"/>
+    </root>
+
+</configuration>

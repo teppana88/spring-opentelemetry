@@ -1,0 +1,54 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+
+processors:
+  # batch metrics before sending to reduce API usage
+  batch:
+    send_batch_max_size: 1000
+    send_batch_size: 100
+    timeout: 10s # Set min timeout when data is pushed to Prometheus
+
+exporters:
+  prometheusremotewrite:
+    endpoint: "http://prometheus:9090/api/v1/write"
+    tls:
+      insecure: true
+
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+#    endpoint: "localhost:8889"
+    enable_open_metrics: true
+
+  otlp/tempo:
+    endpoint: "http://tempo:4317"
+    tls:
+      insecure: true
+
+  loki:
+    endpoint: "http://loki:3100/loki/api/v1/push"
+
+# Configure health check extension for collector
+# This will be enabled in service section
+# Read latest notes on health check extension here:
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/extension/healthcheckextension/README.md
+extensions:
+  health_check:
+
+service:
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheusremotewrite]
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/tempo]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [loki]
+#  extensions: [health_check]
