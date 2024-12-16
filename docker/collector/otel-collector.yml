@@ -9,17 +9,15 @@ processors:
   batch:
     send_batch_max_size: 1000
     send_batch_size: 100
-    timeout: 10s # Set min timeout when data is pushed to Prometheus
+    timeout: 15s # Set min timeout when data is pushed to Prometheus
+  memory_limiter:
+    limit_mib: 1000 # 1GB
+    spike_limit_mib: 200 # 200MB
+    check_interval: 5s
 
 exporters:
-  prometheusremotewrite:
-    endpoint: "http://prometheus:9090/api/v1/write"
-    tls:
-      insecure: true
-
   prometheus:
     endpoint: "0.0.0.0:8889"
-#    endpoint: "localhost:8889"
     enable_open_metrics: true
 
   otlp/tempo:
@@ -30,25 +28,59 @@ exporters:
   loki:
     endpoint: "http://loki:3100/loki/api/v1/push"
 
+  # Sample configuration for Splunk HEC exporter, not enabled in this example
+  splunk_hec/metrics:
+    # TODO: Update token to your Splunk HEC token
+    token: "00000000-0000-0000-0000-000000000000"
+    # TODO: Update URL to point to your Splunk HEC endpoint
+    endpoint: "http://host.docker.internal:8088/services/collector"
+    # Optional Splunk source (meta field in Splunk)
+    source: "otel"
+    # Optional Splunk source type (meta field in Splunk)
+    sourcetype: "otel"
+    # Splunk index name, this must match the index name in your Splunk index
+    index: "app_metrics"
+    disable_compression: false
+    timeout: 10s
+    tls:
+      # TODO: update tls based on your Splunk HEC configuration
+      insecure_skip_verify: true
+
 # Configure health check extension for collector
 # This will be enabled in service section
 # Read latest notes on health check extension here:
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/extension/healthcheckextension/README.md
 extensions:
   health_check:
+    endpoint: 0.0.0.0:13133
+  pprof:
+    endpoint: :1888
+  zpages:
+    endpoint: :55679
 
 service:
   pipelines:
     metrics:
       receivers: [otlp]
-      processors: [batch]
-      exporters: [prometheusremotewrite]
+      processors: [memory_limiter,batch]
+      exporters: [prometheus]
+#      exporters: [prometheus,splunk_hec/metrics]
     traces:
       receivers: [otlp]
-      processors: [batch]
+      processors: [memory_limiter,batch]
       exporters: [otlp/tempo]
     logs:
       receivers: [otlp]
-      processors: [batch]
+      processors: [memory_limiter,batch]
       exporters: [loki]
-#  extensions: [health_check]
+  extensions: [pprof, zpages, health_check]
+  # Enable metrics generator for collector itself
+  telemetry:
+    metrics:
+      level: normal
+      readers:
+        - periodic:
+            exporter:
+              otlp:
+                protocol: grpc/protobuf
+                endpoint: http://0.0.0.0:4317
