@@ -1,7 +1,17 @@
 # Table of Contents
-- [Summary](#summary)
-- [Installation](#installation)
-- [Usage](#usage)
+- [Summary](#1-summary)
+- [App Configuration](#2-app-configuration)
+- [Otel Collector Configuration](#3-otel-collector-configuration)
+    - [Receivers](#31-receivers)
+    - [Processors](#32-processors)
+    - [Exporters](#33-exporters)
+    - [Extensions](#34-extensions)
+    - [Service](#35-service)
+- [Observability Tools Configuration](#4-observability-tools-configuration)
+    - [Prometheus Configuration](#41-prometheus-configuration)
+    - [Grafana Tempo Configuration](#42-grafana-tempo-configuration)
+    - [Grafana Loki Configuration](#43-grafana-loki-configuration)
+    - [Grafana Configuration](#44-grafana-configuration)
 
 # 1. Summary
 This project is providing a simple Spring Boot app with observability implementation.
