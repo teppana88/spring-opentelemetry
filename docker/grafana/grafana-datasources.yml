@@ -10,7 +10,7 @@ datasources:
     basicAuth: false
     isDefault: false
     version: 1
-    editable: false
+    editable: true # Update this before prod deployment
     jsonData:
       httpMethod: GET
       exemplarTraceIdDestinations:
@@ -26,7 +26,7 @@ datasources:
     basicAuth: false
     isDefault: false
     version: 1
-    editable: false
+    editable: true # Update this before prod deployment
 
   - name: Tempo
     type: tempo
@@ -36,13 +36,11 @@ datasources:
     basicAuth: false
     isDefault: true
     version: 1
-    editable: false
+    editable: true # Update this before prod deployment
     apiVersion: 1
     uid: tempo
     jsonData:
       httpMethod: GET
-      serviceMap:
-        datasourceUid: prometheus
       tracesToLogsV2:
         datasourceUid: loki
         spanStartTimeShift: '-1h'
@@ -50,3 +48,12 @@ datasources:
         filterByTraceID: true
         filterBySpanID: true
         tags: [ { key: 'service.name', value: 'job' } ]
+      tracesToMetrics:
+        datasourceUid: prometheus
+        spanStartTimeShift: '2m'
+        spanEndTimeShift: '-2m'
+        tags: [{ key: 'service.name', value: 'service' }, { key: 'job' }]
+      serviceMap:
+        datasourceUid: prometheus
+      nodeGraph:
+        enabled: true
