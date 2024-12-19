@@ -7,17 +7,14 @@ distributor:
       protocols:
         http:
         grpc:
-    opencensus:
-
-ingester:
-  max_block_duration: 5m
 
 compactor:
   compaction:
-    block_retention: 1h                # General Tempo trace retention. set for demo purposes
+    block_retention: 168h # General Tempo trace retention. Set for 7 days (168h)
 
 metrics_generator:
   registry:
+    collection_interval: 15s
     external_labels:
       source: tempo
       cluster: docker-compose
@@ -36,4 +33,6 @@ storage:
       path: /tmp/tempo/blocks
 
 overrides:
-  metrics_generator_processors: [service-graphs, span-metrics] # enables metrics generator
+  defaults:
+    metrics_generator:
+      processors: [service-graphs, span-metrics] # enables metrics generator

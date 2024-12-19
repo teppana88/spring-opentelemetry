@@ -4,6 +4,7 @@ global:
   evaluation_interval: 15s
 
 scrape_configs:
+  # Main job to scrape metrics from the OpenTelemetry Collector
   - job_name: otel_collector
     honor_timestamps: true
     scrape_interval: 15s
@@ -13,3 +14,14 @@ scrape_configs:
     static_configs:
       - targets:
           - collector:8889
+  # Job to scrape metrics from Prometheus itself
+  # Enable if needed
+#  - job_name: prometheus
+#    honor_timestamps: true
+#    scrape_interval: 15s
+#    scrape_timeout: 15s
+#    metrics_path: /metrics
+#    scheme: http
+#    static_configs:
+#      - targets:
+#          - prometheus:9090
