@@ -13,11 +13,17 @@ compactor:
     block_retention: 168h # General Tempo trace retention. Set for 7 days (168h)
 
 metrics_generator:
+  processor:
+    service_graphs: # Enable Service Graph in Tempo
+      peer_attributes:
+        - peer.service
+        - db.name
+        - db.system
+      enable_virtual_node_label: true
   registry:
     collection_interval: 15s
     external_labels:
       source: tempo
-      cluster: docker-compose
   storage:
     path: /tmp/tempo/generator/wal
     remote_write:

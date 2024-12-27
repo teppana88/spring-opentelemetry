@@ -52,8 +52,6 @@ datasources:
         datasourceUid: prometheus
         spanStartTimeShift: '2m'
         spanEndTimeShift: '-2m'
-        tags: [{ key: 'service.name', value: 'service' }, { key: 'job' }]
+        tags: [{ key: 'service.name', value: 'service' }, { key: 'peer.service', value: 'server' }, { key: 'job' }]
       serviceMap:
         datasourceUid: prometheus
-      nodeGraph:
-        enabled: true
