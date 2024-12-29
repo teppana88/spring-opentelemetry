@@ -35,7 +35,9 @@ services:
   loki:
     container_name: loki
     image: grafana/loki:latest
-    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./docker/loki/loki.yml:/etc/loki/loki.yml
+    command: -config.file=/etc/loki/loki.yml
     restart: always
     ports:
       - "3100"
