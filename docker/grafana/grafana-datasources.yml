@@ -47,11 +47,11 @@ datasources:
         spanEndTimeShift: '1h'
         filterByTraceID: true
         filterBySpanID: true
-        tags: [ { key: 'service.name', value: 'job' } ]
+        tags: [{ key: 'service.name', value: 'service_name' }, { key: 'peer.service', value: 'server' }, { key: 'job' }]
       tracesToMetrics:
         datasourceUid: prometheus
         spanStartTimeShift: '2m'
         spanEndTimeShift: '-2m'
-        tags: [{ key: 'service.name', value: 'service' }, { key: 'peer.service', value: 'server' }, { key: 'job' }]
+        tags: [{ key: 'service.name', value: 'service_name' }, { key: 'peer.service', value: 'server' }, { key: 'job' }]
       serviceMap:
         datasourceUid: prometheus
