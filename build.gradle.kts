@@ -33,7 +33,6 @@ dependencies {
 
 	// These are opentelemetry dependencies
 	// For Spring Boot native - OpenTelemetry core instrumentation for Spring Boot
-	implementation(platform(SpringBootPlugin.BOM_COORDINATES))
 	implementation(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom:2.11.0"))
 	implementation("io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter:2.11.0")
 	// Enable metrics
