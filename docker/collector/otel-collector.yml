@@ -14,7 +14,15 @@ processors:
     limit_mib: 1000 # 1GB
     spike_limit_mib: 200 # 200MB
     check_interval: 5s
-
+  filter/keep_dev_metrics:
+    error_mode: ignore
+    metrics:
+      metric:
+        - 'HasAttrOnDatapoint("deployment.environment", "prod")'
+  filter/keep_prod_metrics:
+    metrics:
+      metric:
+        - 'HasAttrOnDatapoint("deployment.environment", "dev")'
 exporters:
   prometheus:
     endpoint: "0.0.0.0:8889"
@@ -31,7 +39,7 @@ exporters:
       insecure: true
 
   # Sample configuration for Splunk HEC exporter, not enabled in this example
-  splunk_hec/metrics:
+  splunk_hec/metrics_prod:
     # TODO: Update token to your Splunk HEC token
     token: "00000000-0000-0000-0000-000000000000"
     # TODO: Update URL to point to your Splunk HEC endpoint
@@ -65,8 +73,9 @@ service:
     metrics:
       receivers: [otlp]
       processors: [memory_limiter,batch]
+#      processors: [filter/keep_prod_metrics,memory_limiter,batch]
       exporters: [prometheus]
-#      exporters: [prometheus,splunk_hec/metrics]
+#      exporters: [prometheus,splunk_hec/metrics_prod]
     traces:
       receivers: [otlp]
       processors: [memory_limiter,batch]
