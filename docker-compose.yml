@@ -23,7 +23,7 @@ services:
 
   tempo:
     container_name: tempo
-    image: grafana/tempo:latest
+    image: grafana/tempo:2.7.0
     command: [ "-config.file=/etc/tempo.yml" ]
     volumes:
       - ./docker/tempo/tempo.yml:/etc/tempo.yml
@@ -34,7 +34,7 @@ services:
 
   loki:
     container_name: loki
-    image: grafana/loki:latest
+    image: grafana/loki:3.3.2
     volumes:
       - ./docker/loki/loki.yml:/etc/loki/loki.yml
     command: -config.file=/etc/loki/loki.yml
@@ -44,7 +44,7 @@ services:
 
   prometheus:
     container_name: prometheus
-    image: prom/prometheus
+    image: prom/prometheus:v3.1.0
     volumes:
       - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
@@ -60,7 +60,7 @@ services:
 
   grafana:
     container_name: grafana
-    image: grafana/grafana
+    image: grafana/grafana:11.4.0
     volumes:
       - ./docker/grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
     restart: always
